@@ -12,7 +12,7 @@ authors:
   - family-names: Fetna
     given-names: Mulham
     orcid: "https://orcid.org/0009-0006-4432-798X"
-version: 0.1.0
+version: 0.1.1
 date-released: "2026-08-17"
 license: AGPL-3.0-or-later
 url: "https://github.com/mulhamfetna/haptic-nerve-feedback"
