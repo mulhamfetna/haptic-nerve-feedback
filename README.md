@@ -1,6 +1,6 @@
 # haptic-nerve-feedback
 
-[![DOI](https://zenodo.org/badge/REPO_ID.svg)](https://zenodo.org/badge/latestdoi/REPO_ID)
+[![DOI](https://zenodo.org/badge/1337180673.svg)](https://zenodo.org/badge/latestdoi/1337180673)
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
 [![Cite this repo](https://img.shields.io/badge/Cite-CITATION.cff-green.svg)](CITATION.cff)
 
