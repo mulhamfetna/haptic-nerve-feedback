@@ -62,7 +62,21 @@ sources, replication notes, and safety review are especially welcome.
 ## Citation
 
 If you use this work, please cite it (GitHub's *"Cite this repository"* button uses
-[CITATION.cff](CITATION.cff)). A DOI for each release is archived on Zenodo.
+[CITATION.cff](CITATION.cff)). Every release is archived on Zenodo — concept DOI
+[10.5281/zenodo.21981868](https://doi.org/10.5281/zenodo.21981868) (always resolves to
+the latest version).
+
+```bibtex
+@software{fetna_haptic_nerve_feedback,
+  author  = {Fetna, Mulham},
+  title   = {haptic-nerve-feedback: skin-bypassing haptic feedback
+             via electrical nerve stimulation},
+  year    = {2026},
+  version = {0.1.1},
+  doi     = {10.5281/zenodo.21981868},
+  url     = {https://github.com/mulhamfetna/haptic-nerve-feedback}
+}
+```
 
 ## Author
 

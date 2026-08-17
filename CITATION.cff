@@ -14,6 +14,14 @@ authors:
     orcid: "https://orcid.org/0009-0006-4432-798X"
 version: 0.1.1
 date-released: "2026-08-17"
+doi: 10.5281/zenodo.21981868
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.21981868
+    description: "Concept DOI — always resolves to the latest version."
+  - type: doi
+    value: 10.5281/zenodo.21981869
+    description: "Version DOI for v0.1.1."
 license: AGPL-3.0-or-later
 url: "https://github.com/mulhamfetna/haptic-nerve-feedback"
 repository-code: "https://github.com/mulhamfetna/haptic-nerve-feedback"
