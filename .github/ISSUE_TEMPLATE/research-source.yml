@@ -1,0 +1,33 @@
+name: 📚 Research source
+description: Propose a paper, patent, product, or lab for the research landscape
+title: "[source] "
+labels: ["type:research"]
+body:
+  - type: input
+    id: link
+    attributes:
+      label: Link to the original source
+      description: Publisher page, arXiv, patent office, or product site. No PDF uploads.
+      placeholder: https://…
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Product / company
+        - Academic paper
+        - Patent
+        - Open-source hardware/software
+        - Safety / regulatory
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: relevance
+    attributes:
+      label: Why it matters to this project
+      description: Which roadmap stage (H1–H4 / software stages) does it inform, and what does it add beyond what is already in RESEARCH-LANDSCAPE.md?
+    validations:
+      required: true

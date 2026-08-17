@@ -1,0 +1,23 @@
+name: Check markdown links
+
+on:
+  pull_request:
+    paths: ["**/*.md"]
+  schedule:
+    - cron: "17 6 1 * *" # monthly
+  workflow_dispatch:
+
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Link check (informational)
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress
+            --accept 200..=299,403,429
+            --exclude "x\.com|twitter\.com|researchgate\.net|instagram\.com|facebook\.com|whatsapp\.com|t\.me|scholar\.google\.com|dl\.acm\.org|ieeexplore\.ieee\.org"
+            "**/*.md"
+          fail: false

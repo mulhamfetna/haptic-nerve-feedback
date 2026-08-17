@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this work in your research, please cite it as below."
+title: "haptic-nerve-feedback: skin-bypassing haptic feedback via electrical nerve stimulation"
+abstract: >-
+  An open research project developing skin-bypassing haptic feedback: electrical
+  stimulation of afferent nerves (no mechanical actuators) that the brain perceives
+  as touch. Staged development from a single-finger neural haptic ring toward
+  whole-hand (wrist-level) and, long-term, spine-level stimulation, targeting
+  applications in VR/AR, prosthetics, robot teleoperation, and virtual labs.
+type: software
+authors:
+  - family-names: Fetna
+    given-names: Mulham
+    orcid: "https://orcid.org/0009-0006-4432-798X"
+version: 0.1.0
+date-released: "2026-08-17"
+license: AGPL-3.0-or-later
+url: "https://github.com/mulhamfetna/haptic-nerve-feedback"
+repository-code: "https://github.com/mulhamfetna/haptic-nerve-feedback"
+keywords:
+  - haptic feedback
+  - neural haptics
+  - electrotactile stimulation
+  - nerve stimulation
+  - referred sensation
+  - virtual reality
+  - wearable devices

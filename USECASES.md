@@ -1,0 +1,5 @@
+- prosthesis
+- gaming
+- virtual labs and simulations
+- operate robotics remotly with feedback
+- recording sensing

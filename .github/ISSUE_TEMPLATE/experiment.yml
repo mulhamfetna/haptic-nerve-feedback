@@ -1,0 +1,48 @@
+name: 🧪 Experiment
+description: Propose or report a stimulation experiment (reproducible parameters required)
+title: "[experiment] "
+labels: ["type:hardware"]
+body:
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Roadmap stage
+      options:
+        - H1 — Ring (single finger)
+        - H2 — Wrist band (whole hand)
+        - H3 — Toward the CNS
+        - H4 — Spine patch (far horizon)
+        - Software stage
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: Hardware setup
+      description: Stimulator, electrodes (type, size, gel), placement, current limiting.
+    validations:
+      required: true
+  - type: textarea
+    id: parameters
+    attributes:
+      label: Stimulation parameters
+      description: Waveform, pulse width, frequency, amplitude, polarity, duration. Biphasic charge-balanced only.
+      placeholder: "e.g. biphasic square, 200 µs/phase, 50 Hz, 2–6 mA ramp, cathodic-first"
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected / observed sensation
+      description: Location, quality (pressure, tingling, vibration…), intensity, stability.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety checklist
+      options:
+        - label: Within TENS-class limits (≤25 mA, biphasic, charge-balanced)
+          required: true
+        - label: No trans-thoracic or head placement
+          required: true
+        - label: Hardware current limiting independent of firmware
+          required: true

@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Open a discussion
+    url: https://github.com/mulhamfetna/haptic-nerve-feedback/discussions
+    about: Questions, ideas, and open-ended conversation about neural haptics.

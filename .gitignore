@@ -1,0 +1,27 @@
+# Copyrighted source material — kept in the local research archive only.
+# Published journal PDFs (Elsevier, Wiley, …) and video transcripts must not be
+# redistributed through this public, DOI-archived repository.
+*.pdf
+*transcipt.md
+*transcpit.md
+*transcript.md
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Local environment
+.env

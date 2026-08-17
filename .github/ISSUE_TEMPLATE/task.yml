@@ -1,0 +1,26 @@
+name: ✅ Task
+description: A concrete work item (docs, code, design, analysis)
+title: "[task] "
+labels: []
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What needs to be done
+    validations:
+      required: true
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Roadmap stage (if applicable)
+      options:
+        - H1 — Ring
+        - H2 — Wrist band
+        - H3 — Toward the CNS
+        - H4 — Spine patch
+        - Software
+        - Project / meta
+  - type: textarea
+    id: done
+    attributes:
+      label: Definition of done
