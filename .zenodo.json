@@ -3,7 +3,7 @@
   "description": "An open research project developing skin-bypassing haptic feedback: electrical stimulation of afferent nerves (no mechanical actuators) that the brain perceives as touch. Staged development from a single-finger neural haptic ring toward whole-hand (wrist-level) and, long-term, spine-level stimulation, targeting applications in VR/AR, prosthetics, robot teleoperation, and virtual labs.",
   "upload_type": "software",
   "access_right": "open",
-  "license": "AGPL-3.0-or-later",
+  "license": "agpl-3.0-or-later",
   "creators": [
     {
       "name": "Fetna, Mulham",
