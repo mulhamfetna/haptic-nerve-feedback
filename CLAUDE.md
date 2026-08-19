@@ -29,6 +29,13 @@ labs/simulation, remote robot teleoperation with feedback, and sensory recording
   Teslasuit), academic labs, patents, open-source stimulator hardware, and safety limits.
 - `REFERENCES.md` — the master index of sources, linking to original URLs only.
 - `USECASES.md` — running list of target use cases for the research.
+- `PATENT-US11809629B1.md` — full deep-read of the Afference patent (architecture,
+  claims/FTO, H1 takeaways). `ELECTROTACTILE-PARAMETERS.md` — parameter→sensation
+  reference distilled from the two core surveys; the H1 starting recipe lives in its §7.
+- `HARDWARE.md` — staged bench-rig shopping list (TENS → openEMSstim → OpenXstim).
+- `experiments/` — `PROTOCOL.md` (session procedure + safety checklist), `LOGGING.md`
+  (trial schema), `LOG.csv` (the dataset; one row per stimulation trial, failed trials
+  included — this file is the future publication data, append-only).
 - **Local-only archive (gitignored, never commit):** `*.pdf` papers and
   `*transcipt.md`/`*transcpit.md` video transcripts are copyrighted third-party material and
   must not enter the public, DOI-archived repo. `.gitignore` enforces this — don't weaken it.

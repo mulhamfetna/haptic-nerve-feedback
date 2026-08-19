@@ -1,0 +1,1 @@
+session_id,date,trial,hardware,electrode_type,electrode_size_mm2,site,spacing_mm,cathode_position,waveform,pulse_width_us,frequency_hz,burst,amplitude_ma,duration_s,sensation_threshold_ma,discomfort_threshold_ma,perceived_location,referred,quality,intensity_0_10,comfort_0_10,minutes_since_start,notes
