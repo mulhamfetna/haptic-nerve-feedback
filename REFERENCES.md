@@ -27,6 +27,10 @@
 - Kajimoto lab — *Full-hand Electro-Tactile Feedback without Obstructing Palmar Side of Hand*
 - *Sensors* 23(1):431 (MDPI, open access) — [publisher](https://www.mdpi.com/1424-8220/23/1/431)
 
+## Patents (PDF held locally)
+
+- [US11809629B1 — Wearable electronic device for inducing transient sensory events as user feedback (Afference)](https://patents.google.com/patent/US11809629B1/en) — the neural haptic ring patent; H1 replication reference
+
 ## Articles
 
 - [An Artificial Hand with Real Feelings — MIT Technology Review](https://www.technologyreview.com/2013/12/05/14493/an-artificial-hand-with-real-feelings/)
