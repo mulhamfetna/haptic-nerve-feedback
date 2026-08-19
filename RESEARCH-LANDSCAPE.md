@@ -52,6 +52,9 @@ For positioning and benchmarks: **HaptX** (microfluidic gloves, 135 actuators),
 **Surveys — start here:**
 - [A Comprehensive Survey of Electrical Stimulation Haptic Feedback in HCI (2025, arXiv)](https://arxiv.org/pdf/2504.21477)
 - [Electrotactile feedback for hand/arm interactions: systematic review & meta-analysis (arXiv)](https://arxiv.org/pdf/2105.05343)
+- **Both fully read → parameter→sensation reference distilled in
+  [ELECTROTACTILE-PARAMETERS.md](./ELECTROTACTILE-PARAMETERS.md)** (frequency/polarity/
+  waveform maps, thresholds, electrode rules, impedance/calibration, H1 starting recipe).
 - [Virtual tactile feedback via microcurrent stimulation: status, challenges, prospects (Frontiers in Neuroscience, 2025)](https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2025.1519758/full)
 - [Wearable Haptic Feedback Interfaces for Augmenting Human Touch (Adv. Funct. Materials, 2026)](https://advanced.onlinelibrary.wiley.com/doi/10.1002/adfm.202417906)
 

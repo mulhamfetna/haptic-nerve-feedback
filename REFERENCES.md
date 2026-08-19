@@ -31,6 +31,11 @@
 
 - [US11809629B1 — Wearable electronic device for inducing transient sensory events as user feedback (Afference)](https://patents.google.com/patent/US11809629B1/en) — the neural haptic ring patent; H1 replication reference. Deep-read notes: [PATENT-US11809629B1.md](./PATENT-US11809629B1.md)
 
+## Surveys (PDFs held locally; distilled in [ELECTROTACTILE-PARAMETERS.md](./ELECTROTACTILE-PARAMETERS.md))
+
+- [Yang et al. — A Comprehensive Survey of Electrical Stimulation Haptic Feedback in HCI (2025)](https://arxiv.org/abs/2504.21477)
+- [Kourtesis et al. — Electrotactile feedback for hand and arm interactions: systematic review, meta-analysis (IEEE ToH 2022)](https://arxiv.org/abs/2105.05343)
+
 ## Articles
 
 - [An Artificial Hand with Real Feelings — MIT Technology Review](https://www.technologyreview.com/2013/12/05/14493/an-artificial-hand-with-real-feelings/)
