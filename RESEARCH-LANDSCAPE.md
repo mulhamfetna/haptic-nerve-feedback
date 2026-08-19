@@ -22,6 +22,9 @@ what we want to build" outward. See `ROADMAP.md` for how each section maps to ou
   (Afference). Claims: electrode array on a finger ring worn on the proximal phalanx,
   transdermal stimulation of a branch of the **median nerve**, evoking a sensory impression
   in the innervated area (fingertip pressure), *not* at the electrode site.
+  **Full-text deep read done → [PATENT-US11809629B1.md](./PATENT-US11809629B1.md)**
+  (architecture, electrode/materials details, calibration workflow, claims/FTO analysis,
+  H1 takeaways).
   Also browse [Jacob Segil's patents](https://patents.justia.com/inventor/jacob-segil) and the
   unrelated-assignee ["Haptic ring" US11285291](https://patents.justia.com/patent/11285291)
   for freedom-to-operate awareness. **We are replicating for research; if this ever becomes a

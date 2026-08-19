@@ -29,7 +29,7 @@
 
 ## Patents (PDF held locally)
 
-- [US11809629B1 — Wearable electronic device for inducing transient sensory events as user feedback (Afference)](https://patents.google.com/patent/US11809629B1/en) — the neural haptic ring patent; H1 replication reference
+- [US11809629B1 — Wearable electronic device for inducing transient sensory events as user feedback (Afference)](https://patents.google.com/patent/US11809629B1/en) — the neural haptic ring patent; H1 replication reference. Deep-read notes: [PATENT-US11809629B1.md](./PATENT-US11809629B1.md)
 
 ## Articles
 
