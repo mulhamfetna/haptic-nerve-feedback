@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>H1 Stimulator Console</title>
+<style>
+/* Layout: one column on phones, two (state+controls | parameters) on laptops */
+:root{
+  --bg:#f3f6f7; --panel:#fff; --fg:#17212b; --muted:#5d6c78; --rule:#d6dfe5; --soft:#eaf0f3;
+  --accent:#0e7490; --ok:#15803d; --warn:#b45309; --bad:#b91c1c; --stim:#be185d;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0f1519; --panel:#151d23; --fg:#dde6ec; --muted:#93a4b0; --rule:#2a3740; --soft:#1b252c;
+  --accent:#22d3ee; --ok:#4ade80; --warn:#fbbf24; --bad:#f87171; --stim:#f9a8d4; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.45}
+.wrap{max-width:1080px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-left)) 48px max(16px,env(safe-area-inset-right));display:grid;gap:14px}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+h1{font-size:20px;margin:0;font-weight:650}
+.sub{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:14px}
+@media (max-width:820px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:14px;display:grid;gap:12px;min-width:0}
+.card h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0;font-weight:600;font-family:var(--mono)}
+button{font:inherit;border-radius:8px;border:1px solid var(--rule);background:var(--panel);color:var(--fg);padding:9px 14px;cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.primary{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:650}
+.state{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pill{font-family:var(--mono);font-size:15px;font-weight:600;padding:6px 14px;border-radius:999px;border:2px solid currentColor;text-transform:uppercase;letter-spacing:.05em}
+.s-off{color:var(--muted)} .s-disarmed{color:var(--muted)} .s-armed{color:var(--warn)} .s-stimulating{color:var(--stim)} .s-faulted{color:var(--bad)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.kv div{background:var(--soft);border-radius:8px;padding:8px 10px;min-width:0}
+.kv b{display:block;font-family:var(--mono);font-size:16px;font-weight:500;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.kv span{font-size:12px;color:var(--muted)}
+.msg{font-size:14px;padding:8px 12px;border-radius:8px;background:var(--soft)}
+.msg.bad{color:var(--bad)} .msg.warn{color:var(--warn)}
+.big{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.go{font-size:20px;font-weight:700;padding:18px;border:2px solid var(--stim);color:var(--stim);background:var(--panel)}
+.stop{font-size:20px;font-weight:700;padding:18px;background:var(--bad);border-color:var(--bad);color:#fff}
+.row2{display:flex;gap:10px;flex-wrap:wrap}
+label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+.field{display:grid;grid-template-columns:1fr 96px;gap:10px;align-items:center}
+input[type=range]{width:100%}
+input[type=number]{font:inherit;font-family:var(--mono);background:var(--soft);color:var(--fg);border:1px solid var(--rule);border-radius:6px;padding:6px 8px;width:100%;min-width:0}
+.ampval{font-family:var(--mono);font-size:28px;font-weight:600;font-variant-numeric:tabular-nums}
+.meter{height:10px;border-radius:999px;background:var(--soft);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--ok);width:0}
+.meter.over i{background:var(--bad)}
+.burst{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.check{display:flex;align-items:center;gap:8px;color:var(--fg);font-size:14px}
+.log{font-family:var(--mono);font-size:12px;max-height:220px;overflow:auto;background:var(--soft);border-radius:8px;padding:8px 10px;white-space:pre-wrap;margin:0}
+kbd{font-family:var(--mono);font-size:12px;border:1px solid var(--rule);border-bottom-width:2px;border-radius:4px;padding:0 5px}
+.sync{font-size:13px}
+.sync.diff{color:var(--warn)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>H1 stimulator console</h1>
+      <div class="sub" id="devline">not connected</div>
+    </div>
+    <div class="row2">
+      <button class="primary" id="connectBtn">Connect</button>
+      <button id="disconnectBtn" disabled>Disconnect</button>
+    </div>
+  </header>
+  <div class="msg bad" id="nobt" hidden></div>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Board</h2>
+      <div class="state"><span class="pill s-off" id="statePill">offline</span><span id="faultTxt"></span></div>
+      <div class="msg warn" id="errTxt" hidden></div>
+      <div class="big">
+        <button class="go" id="goBtn" disabled>GO</button>
+        <button class="stop" id="stopBtn" disabled>STOP <small>(Esc)</small></button>
+      </div>
+      <div class="row2">
+        <button id="armBtn" disabled>Arm</button>
+        <button id="disarmBtn" disabled>Disarm / clear fault</button>
+      </div>
+      <div class="kv">
+        <div><b id="kvAmp">–</b><span>board amplitude</span></div>
+        <div><b id="kvPwF">–</b><span>pulse width · rate</span></div>
+        <div><b id="kvIavg">–</b><span>avg current / budget</span></div>
+        <div><b id="kvPul">–</b><span>pulses · events</span></div>
+        <div><b id="kvIref">–</b><span>measured current</span></div>
+        <div><b id="kvFw">–</b><span>firmware</span></div>
+      </div>
+      <h2>Log</h2>
+      <pre class="log" id="log"></pre>
+      <div class="row2"><button id="copyLog">Copy log</button></div>
+    </section>
+
+    <section class="card">
+      <h2>Parameters</h2>
+      <div>
+        <label for="amp">Amplitude</label>
+        <div class="ampval" id="ampVal">0.00 mA</div>
+        <input type="range" id="amp" min="0" max="4000" step="50" value="0">
+      </div>
+      <div class="field"><label for="pw">Pulse width (µs) <small>50–500</small></label><input type="number" id="pw" min="50" max="500" step="10" value="200"></div>
+      <div class="field"><label for="f">Rate (Hz) <small>1–250</small></label><input type="number" id="f" min="1" max="250" step="1" value="20"></div>
+      <div class="field"><label for="dur">Event length (ms) <small>≤ 5000</small></label><input type="number" id="dur" min="100" max="5000" step="100" value="2000"></div>
+      <label class="check" for="burstOn"><input type="checkbox" id="burstOn"> Burst mode (rate is then set by the burst)</label>
+      <div class="burst" id="burstBox" hidden>
+        <label for="bn">Pulses / burst<input type="number" id="bn" min="1" max="6" value="6"></label>
+        <label for="bfi">Rate in burst (Hz)<input type="number" id="bfi" min="1" max="250" value="200"></label>
+        <label for="bgap">Gap (ms)<input type="number" id="bgap" min="10" max="500" value="37"></label>
+      </div>
+      <div>
+        <label>Charge budget: average current <span id="iavgTxt">0 µA</span> of 42 µA</label>
+        <div class="meter" id="meter"><i></i></div>
+      </div>
+      <div class="msg warn" id="stepWarn" hidden></div>
+      <div class="row2">
+        <button class="primary" id="sendBtn" disabled>Send to board</button>
+        <button id="zeroBtn">Amplitude to 0</button>
+      </div>
+      <div class="sync" id="syncTxt"></div>
+    </section>
+  </div>
+  <p class="sub">Order: Connect → set parameters → Send → Arm → GO. <kbd>Esc</kbd> = STOP. The board faults if this page stops sending its heartbeat or the link drops.</p>
+</div>
+
+<script>
+// ---- protocol (must match firmware/main/ble_service.h) ---------------------
+const SVC = "a5f30001-9f6b-4a52-8f2e-1d2c3b4a5e01";
+const CH_PARAMS = "a5f30002-9f6b-4a52-8f2e-1d2c3b4a5e01";
+const CH_CONTROL = "a5f30003-9f6b-4a52-8f2e-1d2c3b4a5e01";
+const CH_STATUS = "a5f30004-9f6b-4a52-8f2e-1d2c3b4a5e01";
+const I_AVG_MAX = 42, AMP_MAX = 4000, BIG_STEP_UA = 500, PULSE_MARGIN = 50;
+
+const $ = id => document.getElementById(id);
+const enc = new TextEncoder(), dec = new TextDecoder();
+let device = null, chParams = null, chControl = null, pingTimer = null, last = null;
+let queue = Promise.resolve();
+let lastSentAmp = 0, stepConfirmed = false;
+
+function log(msg){
+  const t = new Date().toLocaleTimeString([], {hour12:false});
+  const el = $("log"); el.textContent = `${t}  ${msg}\n` + el.textContent;
+}
+// BLE allows one operation at a time, so every write goes through one queue.
+function write(ch, text){
+  queue = queue.then(() => ch.writeValueWithResponse(enc.encode(text))).catch(e => log("write failed: " + e.message));
+  return queue;
+}
+const control = cmd => chControl && write(chControl, cmd);
+
+// ---- connect -------------------------------------------------------------
+if (!navigator.bluetooth) {
+  $("nobt").hidden = false;
+  $("nobt").textContent = "This browser can't use Bluetooth from a web page. Use Chrome or Edge on a laptop or Android phone, opened from http://localhost (laptop) or an https:// address. On Linux, Chrome may need chrome://flags → Experimental Web Platform features. iPhone Safari doesn't support it (the Bluefy browser does).";
+  $("connectBtn").disabled = true;
+}
+$("connectBtn").onclick = async () => {
+  try {
+    device = await navigator.bluetooth.requestDevice({ filters: [{ services: [SVC] }] });
+    device.addEventListener("gattserverdisconnected", onDisconnected);
+    log("connecting to " + (device.name || "device") + "…");
+    const server = await device.gatt.connect();
+    const svc = await server.getPrimaryService(SVC);
+    chParams = await svc.getCharacteristic(CH_PARAMS);
+    chControl = await svc.getCharacteristic(CH_CONTROL);
+    const chStatus = await svc.getCharacteristic(CH_STATUS);
+    chStatus.addEventListener("characteristicvaluechanged", e => onStatus(dec.decode(e.target.value)));
+    await chStatus.startNotifications();
+    onStatus(dec.decode(await chStatus.readValue()));
+    // Heartbeat: one PING per second while connected (board faults after 3 s of silence).
+    pingTimer = setInterval(() => control("PING"), 1000);
+    $("devline").textContent = (device.name || "H1") + " · connected";
+    $("disconnectBtn").disabled = false; $("connectBtn").disabled = true; $("sendBtn").disabled = false;
+    log("connected");
+  } catch (e) { log("connect failed: " + e.message); }
+};
+$("disconnectBtn").onclick = async () => { await control("DISARM"); device && device.gatt.disconnect(); };
+function onDisconnected(){
+  clearInterval(pingTimer); pingTimer = null; chParams = chControl = null; last = null;
+  $("devline").textContent = "not connected";
+  $("statePill").className = "pill s-off"; $("statePill").textContent = "offline";
+  ["goBtn","stopBtn","armBtn","disarmBtn","sendBtn","disconnectBtn"].forEach(id => $(id).disabled = true);
+  $("connectBtn").disabled = !navigator.bluetooth;
+  log("disconnected (board blocks output and faults if it was armed)");
+}
+
+// ---- status from the board ------------------------------------------------------
+function onStatus(text){
+  let s; try { s = JSON.parse(text); } catch { return; }
+  const prev = last; last = s;
+  $("statePill").className = "pill s-" + s.st; $("statePill").textContent = s.st;
+  $("faultTxt").textContent = s.flt ? "fault: " + s.flt : "";
+  $("errTxt").hidden = !s.err; $("errTxt").textContent = s.err ? "Board refused the last parameters: " + s.err : "";
+  $("kvAmp").textContent = (s.amp/1000).toFixed(2) + " mA";
+  $("kvPwF").textContent = s.b ? `${s.pw} µs · burst ${s.b[0]}@${s.b[1]} Hz +${s.b[2]} ms` : `${s.pw} µs · ${s.f} Hz`;
+  $("kvIavg").textContent = `${s.iavg} / ${s.imax} µA`;
+  $("kvPul").textContent = `${s.pul} · ${s.ev}`;
+  $("kvIref").textContent = s.iref < 0 ? "not fitted" : (s.iref/1000).toFixed(2) + " mA";
+  $("kvFw").textContent = s.fw;
+  const armed = s.st === "armed", stim = s.st === "stimulating";
+  $("goBtn").disabled = !armed; $("stopBtn").disabled = !(armed || stim);
+  $("armBtn").disabled = s.st !== "disarmed"; $("disarmBtn").disabled = s.st === "disarmed";
+  if (!prev || prev.st !== s.st) log("state → " + s.st + (s.flt ? " (" + s.flt + ")" : ""));
+  if (prev && prev.err !== s.err && s.err) log("refused: " + s.err);
+  syncCheck();
+}
+
+// ---- parameters ------------------------------------------------------------------
+function readForm(){
+  const p = { amp: +$("amp").value, pw: +$("pw").value, f: +$("f").value, dur: +$("dur").value };
+  p.burst = $("burstOn").checked ? { n: +$("bn").value, fi: +$("bfi").value, gap: +$("bgap").value } : null;
+  return p;
+}
+// Same formula as firmware/main/params.h (avg_current_ua).
+function avgCurrent(p){
+  let rate = p.f;
+  if (p.burst) {
+    const cycleUs = (p.burst.n - 1) * (1e6 / p.burst.fi) + p.pw + PULSE_MARGIN + p.burst.gap * 1000;
+    rate = p.burst.n * 1e6 / cycleUs;
+  }
+  return p.amp * p.pw * rate / 1e6;
+}
+function refresh(){
+  const p = readForm();
+  $("ampVal").textContent = (p.amp/1000).toFixed(2) + " mA";
+  $("burstBox").hidden = !p.burst;
+  const ia = avgCurrent(p);
+  $("iavgTxt").textContent = ia.toFixed(1) + " µA";
+  $("meter").firstElementChild.style.width = Math.min(100, ia / I_AVG_MAX * 100) + "%";
+  $("meter").classList.toggle("over", ia > I_AVG_MAX);
+  const step = p.amp - lastSentAmp;
+  if (step > BIG_STEP_UA && !stepConfirmed) {
+    $("stepWarn").hidden = false;
+    $("stepWarn").textContent = `That raises the amplitude by ${(step/1000).toFixed(2)} mA in one step. Press Send again to confirm.`;
+  } else $("stepWarn").hidden = true;
+  syncCheck();
+}
+function syncCheck(){
+  if (!last) { $("syncTxt").textContent = ""; return; }
+  const p = readForm();
+  const same = p.amp === last.amp && p.pw === last.pw && p.dur === last.dur &&
+    (p.burst ? !!last.b && p.burst.n === last.b[0] && p.burst.fi === last.b[1] && p.burst.gap === last.b[2] : !last.b && p.f === last.f);
+  $("syncTxt").textContent = same ? "Board has these settings." : "Not sent yet: the board is still using its own settings (left).";
+  $("syncTxt").className = "sync" + (same ? "" : " diff");
+}
+["amp","pw","f","dur","burstOn","bn","bfi","bgap"].forEach(id => $(id).addEventListener("input", () => { stepConfirmed = false; refresh(); }));
+$("sendBtn").onclick = () => {
+  const p = readForm();
+  if (p.amp - lastSentAmp > BIG_STEP_UA && !stepConfirmed) { stepConfirmed = true; refresh(); $("stepWarn").hidden = false; return; }
+  if (avgCurrent(p) > I_AVG_MAX) { log("not sent: average current over the 42 µA budget"); return; }
+  write(chParams, JSON.stringify(p)).then(() => { lastSentAmp = p.amp; stepConfirmed = false; refresh(); });
+  log("sent " + JSON.stringify(p));
+};
+$("zeroBtn").onclick = () => { $("amp").value = 0; stepConfirmed = false; refresh(); };
+
+// ---- control ------------------------------------------------------------------
+$("armBtn").onclick = () => { control("ARM"); log("ARM"); };
+$("disarmBtn").onclick = () => { control("DISARM"); log("DISARM"); };
+$("goBtn").onclick = () => { control("GO"); log("GO"); };
+$("stopBtn").onclick = () => { control("STOP"); log("STOP"); };
+document.addEventListener("keydown", e => { if (e.key === "Escape" && chControl) { control("STOP"); log("STOP (Esc)"); } });
+$("copyLog").onclick = () => navigator.clipboard.writeText($("log").textContent).then(() => log("log copied"), () => {});
+refresh();
+</script>
+</body>
+</html>
