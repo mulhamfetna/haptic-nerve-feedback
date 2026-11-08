@@ -158,7 +158,14 @@ const control = cmd => chControl && write(chControl, cmd);
 // ---- connect -------------------------------------------------------------
 if (!navigator.bluetooth) {
   $("nobt").hidden = false;
-  $("nobt").textContent = "This browser can't use Bluetooth from a web page. Use Chrome or Edge on a laptop or Android phone, opened from http://localhost (laptop) or an https:// address. On Linux, Chrome may need chrome://flags → Experimental Web Platform features. iPhone Safari doesn't support it (the Bluefy browser does).";
+  const ua = navigator.userAgent, linux = /Linux/.test(ua) && !/Android/.test(ua);
+  $("nobt").textContent = !window.isSecureContext
+    ? "Bluetooth needs a secure page. Open this from an https:// address or http://localhost, not as a file."
+    : linux
+    ? "Chrome on Linux has Web Bluetooth switched off by default. Open chrome://flags, enable \"Web Bluetooth\" and \"Experimental Web Platform features\", then Relaunch. Bluetooth must be on, and Snap/Flatpak builds of Chrome may still be blocked (use the .deb). Chrome on Android works without flags."
+    : /iPhone|iPad/.test(ua)
+    ? "iPhone and iPad browsers can't use Bluetooth from a web page. Use the Bluefy browser, or an Android phone or laptop with Chrome."
+    : "This browser can't use Bluetooth from a web page. Use Chrome or Edge on a laptop or an Android phone.";
   $("connectBtn").disabled = true;
 }
 $("connectBtn").onclick = async () => {
