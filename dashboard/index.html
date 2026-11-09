@@ -104,7 +104,7 @@ kbd{font-family:var(--mono);font-size:12px;border:1px solid var(--rule);border-b
       <div>
         <label for="amp">Amplitude</label>
         <div class="ampval" id="ampVal">0.00 mA</div>
-        <input type="range" id="amp" min="0" max="4000" step="50" value="0">
+        <input type="range" id="amp" min="0" max="3800" step="50" value="0">
       </div>
       <div class="field"><label for="pw">Pulse width (µs) <small>50–500</small></label><input type="number" id="pw" min="50" max="500" step="10" value="200"></div>
       <div class="field"><label for="f">Rate (Hz) <small>1–250</small></label><input type="number" id="f" min="1" max="250" step="1" value="20"></div>
@@ -136,7 +136,7 @@ const SVC = "a5f30001-9f6b-4a52-8f2e-1d2c3b4a5e01";
 const CH_PARAMS = "a5f30002-9f6b-4a52-8f2e-1d2c3b4a5e01";
 const CH_CONTROL = "a5f30003-9f6b-4a52-8f2e-1d2c3b4a5e01";
 const CH_STATUS = "a5f30004-9f6b-4a52-8f2e-1d2c3b4a5e01";
-const I_AVG_MAX = 42, AMP_MAX = 4000, BIG_STEP_UA = 500, PULSE_MARGIN = 50;
+const I_AVG_MAX = 42, AMP_MAX = 3800, BIG_STEP_UA = 500, PULSE_MARGIN = 50;
 
 const $ = id => document.getElementById(id);
 const enc = new TextEncoder(), dec = new TextDecoder();
