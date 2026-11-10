@@ -57,6 +57,7 @@ input[type=number]{font:inherit;font-family:var(--mono);background:var(--soft);c
 kbd{font-family:var(--mono);font-size:12px;border:1px solid var(--rule);border-bottom-width:2px;border-radius:4px;padding:0 5px}
 .sync{font-size:13px}
 .sync.diff{color:var(--warn)}
+.sync.zero{color:var(--bad);font-weight:600}
 </style>
 </head>
 <body>
@@ -254,6 +255,11 @@ function syncCheck(){
   const p = readForm();
   const same = p.amp === last.amp && p.pw === last.pw && p.dur === last.dur &&
     (p.burst ? !!last.b && p.burst.n === last.b[0] && p.burst.fi === last.b[1] && p.burst.gap === last.b[2] : !last.b && p.f === last.f);
+  if (last.amp === 0 && !same) {
+    $("syncTxt").textContent = "The board's amplitude is 0 mA, so nothing comes out. Press Send to board.";
+    $("syncTxt").className = "sync zero";
+    return;
+  }
   $("syncTxt").textContent = same ? "Board has these settings." : "Not sent yet: the board is still using its own settings (left).";
   $("syncTxt").className = "sync" + (same ? "" : " diff");
 }
@@ -270,7 +276,10 @@ $("zeroBtn").onclick = () => { $("amp").value = 0; stepConfirmed = false; refres
 // ---- control ------------------------------------------------------------------
 $("armBtn").onclick = () => { control("ARM"); log("ARM"); };
 $("disarmBtn").onclick = () => { control("DISARM"); log("DISARM"); };
-$("goBtn").onclick = () => { control("GO"); log("GO"); };
+$("goBtn").onclick = () => {
+  control("GO"); log("GO");
+  if (last && last.amp === 0) log("note: the board's amplitude is 0 mA, so this event delivers no current. Set the amplitude, then press Send.");
+};
 $("stopBtn").onclick = () => { control("STOP"); log("STOP"); };
 document.addEventListener("keydown", e => { if (e.key === "Escape" && chControl) { control("STOP"); log("STOP (Esc)"); } });
 $("copyLog").onclick = () => navigator.clipboard.writeText($("log").textContent).then(() => log("log copied"), () => {});
