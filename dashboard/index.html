@@ -39,7 +39,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .kv span{font-size:12px;color:var(--muted)}
 .msg{font-size:14px;padding:8px 12px;border-radius:8px;background:var(--soft)}
 .msg.bad{color:var(--bad)} .msg.warn{color:var(--warn)}
-.big{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px;border:1px solid var(--rule);border-radius:10px;background:var(--soft)}
+.controls .arm,.controls .disarm{font-weight:600;padding:12px}
+.gowhy{grid-column:1/-1;font-size:13px;color:var(--muted);min-height:18px}
 .go{font-size:20px;font-weight:700;padding:18px;border:2px solid var(--stim);color:var(--stim);background:var(--panel)}
 .stop{font-size:20px;font-weight:700;padding:18px;background:var(--bad);border-color:var(--bad);color:#fff}
 .row2{display:flex;gap:10px;flex-wrap:wrap}
@@ -79,13 +81,12 @@ kbd{font-family:var(--mono);font-size:12px;border:1px solid var(--rule);border-b
       <h2>Board</h2>
       <div class="state"><span class="pill s-off" id="statePill">offline</span><span id="faultTxt"></span></div>
       <div class="msg warn" id="errTxt" hidden></div>
-      <div class="big">
+      <div class="controls" role="group" aria-label="Stimulation controls">
+        <button class="arm" id="armBtn" disabled>Arm</button>
+        <button class="disarm" id="disarmBtn" disabled>Disarm / clear fault</button>
         <button class="go" id="goBtn" disabled>GO</button>
         <button class="stop" id="stopBtn" disabled>STOP <small>(Esc)</small></button>
-      </div>
-      <div class="row2">
-        <button id="armBtn" disabled>Arm</button>
-        <button id="disarmBtn" disabled>Disarm / clear fault</button>
+        <div class="gowhy" id="goWhy">Connect to the board first.</div>
       </div>
       <div class="kv">
         <div><b id="kvAmp">–</b><span>board amplitude</span></div>
@@ -195,6 +196,7 @@ function onDisconnected(){
   $("devline").textContent = "not connected";
   $("statePill").className = "pill s-off"; $("statePill").textContent = "offline";
   ["goBtn","stopBtn","armBtn","disarmBtn","sendBtn","disconnectBtn"].forEach(id => $(id).disabled = true);
+  updateGo(false);
   $("connectBtn").disabled = !navigator.bluetooth;
   log("disconnected (board blocks output and faults if it was armed)");
 }
@@ -213,7 +215,7 @@ function onStatus(text){
   $("kvIref").textContent = s.iref < 0 ? "not fitted" : (s.iref/1000).toFixed(2) + " mA";
   $("kvFw").textContent = s.fw;
   const armed = s.st === "armed", stim = s.st === "stimulating";
-  $("goBtn").disabled = !armed; $("stopBtn").disabled = !(armed || stim);
+  $("stopBtn").disabled = !(armed || stim);
   $("armBtn").disabled = s.st !== "disarmed"; $("disarmBtn").disabled = s.st === "disarmed";
   if (!prev || prev.st !== s.st) log("state → " + s.st + (s.flt ? " (" + s.flt + ")" : ""));
   if (prev && prev.err !== s.err && s.err) log("refused: " + s.err);
@@ -251,10 +253,11 @@ function refresh(){
   syncCheck();
 }
 function syncCheck(){
-  if (!last) { $("syncTxt").textContent = ""; return; }
+  if (!last) { $("syncTxt").textContent = ""; updateGo(false); return; }
   const p = readForm();
   const same = p.amp === last.amp && p.pw === last.pw && p.dur === last.dur &&
     (p.burst ? !!last.b && p.burst.n === last.b[0] && p.burst.fi === last.b[1] && p.burst.gap === last.b[2] : !last.b && p.f === last.f);
+  updateGo(same);
   if (last.amp === 0 && !same) {
     $("syncTxt").textContent = "The board's amplitude is 0 mA, so nothing comes out. Press Send to board.";
     $("syncTxt").className = "sync zero";
@@ -262,6 +265,18 @@ function syncCheck(){
   }
   $("syncTxt").textContent = same ? "Board has these settings." : "Not sent yet: the board is still using its own settings (left).";
   $("syncTxt").className = "sync" + (same ? "" : " diff");
+}
+// GO is allowed only when the board is armed, has a non-zero amplitude, and
+// holds exactly the settings shown in the form (nothing unsent).
+function updateGo(synced){
+  let why = "";
+  if (!last) why = "Connect to the board first.";
+  else if (last.st === "stimulating") why = "Stimulating…";
+  else if (last.st !== "armed") why = "Press Arm first.";
+  else if (last.amp === 0) why = "The board's amplitude is 0 mA. Set an amplitude and press Send.";
+  else if (!synced) why = "You have unsent changes. Press Send to board first.";
+  $("goBtn").disabled = why !== "";
+  $("goWhy").textContent = why;
 }
 ["amp","pw","f","dur","burstOn","bn","bfi","bgap"].forEach(id => $(id).addEventListener("input", () => { stepConfirmed = false; refresh(); }));
 $("sendBtn").onclick = () => {
@@ -276,10 +291,7 @@ $("zeroBtn").onclick = () => { $("amp").value = 0; stepConfirmed = false; refres
 // ---- control ------------------------------------------------------------------
 $("armBtn").onclick = () => { control("ARM"); log("ARM"); };
 $("disarmBtn").onclick = () => { control("DISARM"); log("DISARM"); };
-$("goBtn").onclick = () => {
-  control("GO"); log("GO");
-  if (last && last.amp === 0) log("note: the board's amplitude is 0 mA, so this event delivers no current. Set the amplitude, then press Send.");
-};
+$("goBtn").onclick = () => { if ($("goBtn").disabled) return; control("GO"); log("GO"); };
 $("stopBtn").onclick = () => { control("STOP"); log("STOP"); };
 document.addEventListener("keydown", e => { if (e.key === "Escape" && chControl) { control("STOP"); log("STOP (Esc)"); } });
 $("copyLog").onclick = () => navigator.clipboard.writeText($("log").textContent).then(() => log("log copied"), () => {});
